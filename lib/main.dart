@@ -28,8 +28,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.lightGreen,
-        ),
+            primarySwatch: Colors.lightGreen, primaryColor: Colors.pinkAccent),
         home: InitializerWidget(),
         routes: {
           UserDetailForm.routeArgs: (ctx) => UserDetailForm(),
@@ -61,6 +60,7 @@ class _InitializerWidgetState extends State<InitializerWidget> {
   @override
   Widget build(BuildContext context) {
     print(_user);
-    return _user != null ? AllUsersOverview() : AuthScreen();
+    // return _user != null ? AllUsersOverview() : AuthScreen();
+    return UserDetailForm();
   }
 }

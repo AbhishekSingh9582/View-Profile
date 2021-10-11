@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../provider/profile.dart';
 import '../provider/profile_provider.dart';
 import 'all_users_overview.dart';
+import '../widgets/takePicSection.dart';
 
 class UserDetailForm extends StatefulWidget {
   static const routeArgs = '/UserDetailForm';
@@ -145,6 +146,8 @@ class _UserDetailFormState extends State<UserDetailForm> {
                 key: _formKey,
                 child: ListView(
                   children: [
+                    TakePicSection(),
+                    SizedBox(height: 15),
                     TextFormField(
                       initialValue: name,
                       decoration: InputDecoration(labelText: 'Name'),
