@@ -1,8 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
-class TakePicSection extends StatelessWidget {
-  const TakePicSection({Key? key}) : super(key: key);
+class TakePicSection extends StatefulWidget {
+  final VoidCallback onClicked;
+  final String imagePath;
+  // TakePicSection(this.onClicked);
+  TakePicSection(this.onClicked, this.imagePath, {Key? key}) : super(key: key);
 
+  @override
+  _TakePicSectionState createState() => _TakePicSectionState();
+}
+
+class _TakePicSectionState extends State<TakePicSection> {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -20,7 +30,9 @@ class TakePicSection extends StatelessWidget {
           ClipOval(
             child: CircleAvatar(
               maxRadius: MediaQuery.of(context).size.width / 4,
-              backgroundImage: AssetImage('assets/images/blankPerson.jpg'),
+              backgroundImage: widget.imagePath.contains('https://')
+                  ? NetworkImage(widget.imagePath)
+                  : FileImage(File(widget.imagePath)) as ImageProvider,
             ),
             clipBehavior: Clip.antiAlias,
           ),
@@ -29,14 +41,14 @@ class TakePicSection extends StatelessWidget {
             right: 6,
             child: ClipOval(
               child: Container(
-                padding: EdgeInsets.all(3),
-                color: Theme.of(context).accentColor,
+                padding: const EdgeInsets.all(3),
+                color: Theme.of(context).colorScheme.secondary,
                 child: IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.camera_alt,
                     color: Colors.white,
                   ),
-                  onPressed: () {},
+                  onPressed: widget.onClicked,
                   iconSize: 33,
                 ),
               ),

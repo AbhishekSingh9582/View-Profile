@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 import 'package:firebase_auth/firebase_auth.dart';
 import '../provider/profile.dart';
 import '../provider/profile_provider.dart';
 import 'all_users_overview.dart';
-import '../widgets/takePicSection.dart';
+import '../widgets/take_pic_section.dart';
 
 class UserDetailForm extends StatefulWidget {
   static const routeArgs = '/UserDetailForm';
@@ -27,6 +32,8 @@ class _UserDetailFormState extends State<UserDetailForm> {
   String? city = '';
   String? state = '';
   String? country = '';
+  String? imageUrl =
+      'https://pointchurch.com/wp-content/uploads/2021/06/Blank-Person-Image.png';
 
   var isLoading = false;
   var _isInit = true;
@@ -51,6 +58,23 @@ class _UserDetailFormState extends State<UserDetailForm> {
     }
     _isInit = false;
     super.didChangeDependencies();
+  }
+
+  Future<void> _picImage() async {
+    final ImagePicker picker = ImagePicker();
+    final image = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    print('below image return from picker');
+    if (image == null) return;
+
+    final directory = await getApplicationDocumentsDirectory();
+    final imageName = p.basename(image.path);
+    final imageFile = File('${directory.path}/$imageName');
+    final newImage = await File(image.path).copy(imageFile.path);
+    setState(() {
+      imageUrl = newImage.path;
+    });
   }
 
   Future<void> _saveForm() async {
@@ -79,6 +103,7 @@ class _UserDetailFormState extends State<UserDetailForm> {
             country: this.country.toString(),
             course: this.course.toString(),
             college: this.college.toString(),
+            imageUrl: this.imageUrl.toString(),
           ));
       Navigator.of(context).pushReplacementNamed(AllUsersOverview.routeArgs);
       setState(() {
@@ -97,21 +122,22 @@ class _UserDetailFormState extends State<UserDetailForm> {
           state: this.state.toString(),
           country: this.country.toString(),
           course: this.course.toString(),
-          college: this.college.toString(),
+          college: college.toString(),
+          imageUrl: this.imageUrl.toString(),
         ));
       } catch (error) {
         await showDialog(
             context: context,
             builder: (ctx) {
               return AlertDialog(
-                title: Text('An error Occured \n Something went wrong! '),
+                title: const Text('An error Occured \n Something went wrong! '),
                 content: Text(error.toString()),
                 actions: [
                   TextButton(
                       onPressed: () {
                         Navigator.of(ctx).pop();
                       },
-                      child: Text('Okay'))
+                      child: const Text('Okay'))
                 ],
               );
             });
@@ -137,7 +163,7 @@ class _UserDetailFormState extends State<UserDetailForm> {
         ],
       ),
       body: isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : Padding(
@@ -146,11 +172,14 @@ class _UserDetailFormState extends State<UserDetailForm> {
                 key: _formKey,
                 child: ListView(
                   children: [
-                    TakePicSection(),
-                    SizedBox(height: 15),
+                    TakePicSection(_picImage, imageUrl.toString()),
+                    const SizedBox(height: 15),
                     TextFormField(
                       initialValue: name,
-                      decoration: InputDecoration(labelText: 'Name'),
+                      decoration: InputDecoration(
+                          labelText: 'Name',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8))),
                       onSaved: (value) {
                         name = value;
                       },
@@ -161,12 +190,17 @@ class _UserDetailFormState extends State<UserDetailForm> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 15),
                     TextFormField(
                       initialValue: emailAddress,
-                      decoration: InputDecoration(labelText: 'Email Address'),
+                      decoration: InputDecoration(
+                          labelText: 'Email Address',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8))),
                       onSaved: (value) {
                         emailAddress = value;
                       },
+                      onChanged: (value) => emailAddress = value,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Enter Email Address';
@@ -174,11 +208,15 @@ class _UserDetailFormState extends State<UserDetailForm> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 15),
                     TextFormField(
                       initialValue:
                           phoneNumber == 0 ? '' : phoneNumber.toString(),
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(labelText: 'Phone number'),
+                      decoration: InputDecoration(
+                          labelText: 'Phone number',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8))),
                       onSaved: (value) {
                         phoneNumber = int.parse(value as String);
                       },
@@ -189,9 +227,13 @@ class _UserDetailFormState extends State<UserDetailForm> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 15),
                     TextFormField(
                       initialValue: course,
-                      decoration: InputDecoration(labelText: 'Course'),
+                      decoration: InputDecoration(
+                          labelText: 'Course',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8))),
                       onSaved: (value) {
                         course = value;
                       },
@@ -202,9 +244,13 @@ class _UserDetailFormState extends State<UserDetailForm> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 15),
                     TextFormField(
                       initialValue: college,
-                      decoration: InputDecoration(labelText: 'College'),
+                      decoration: InputDecoration(
+                          labelText: 'College',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8))),
                       onSaved: (value) {
                         college = value;
                       },
@@ -215,9 +261,13 @@ class _UserDetailFormState extends State<UserDetailForm> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 15),
                     TextFormField(
                       initialValue: city,
-                      decoration: InputDecoration(labelText: 'City'),
+                      decoration: InputDecoration(
+                          labelText: 'City',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8))),
                       onSaved: (value) {
                         city = value;
                       },
@@ -228,9 +278,13 @@ class _UserDetailFormState extends State<UserDetailForm> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 15),
                     TextFormField(
                       initialValue: state,
-                      decoration: InputDecoration(labelText: 'State'),
+                      decoration: InputDecoration(
+                          labelText: 'State',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8))),
                       onSaved: (value) {
                         state = value;
                       },
@@ -241,9 +295,13 @@ class _UserDetailFormState extends State<UserDetailForm> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 15),
                     TextFormField(
                       initialValue: country,
-                      decoration: InputDecoration(labelText: 'Country'),
+                      decoration: InputDecoration(
+                          labelText: 'Country',
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8))),
                       onSaved: (value) {
                         country = value;
                       },

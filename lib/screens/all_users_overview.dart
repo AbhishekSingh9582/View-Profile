@@ -81,7 +81,7 @@ class _AllUsersOverviewState extends State<AllUsersOverview> {
               DropdownMenuItem(
                 child: Container(
                   child: Row(
-                    children: [
+                    children: const [
                       Icon(
                         Icons.edit,
                       ),
@@ -97,7 +97,7 @@ class _AllUsersOverviewState extends State<AllUsersOverview> {
               DropdownMenuItem(
                 child: Container(
                   child: Row(
-                    children: [
+                    children: const [
                       Icon(Icons.exit_to_app),
                       SizedBox(
                         width: 4,
@@ -126,7 +126,7 @@ class _AllUsersOverviewState extends State<AllUsersOverview> {
         ],
       ),
       body: _isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : CustomScrollView(
@@ -167,7 +167,7 @@ class _AllUsersOverviewState extends State<AllUsersOverview> {
                                 width: 20,
                               ),
                               Expanded(
-                                child: Container(
+                                child: SizedBox(
                                   width: double.maxFinite,
                                   child: FittedBox(
                                     fit: BoxFit.cover,
@@ -193,7 +193,7 @@ class _AllUsersOverviewState extends State<AllUsersOverview> {
                     (context, index) {
                       if (auth.currentUser!.uid !=
                               nonCurrentUserList[index].id &&
-                          nonCurrentUserList.length > 0) {
+                          nonCurrentUserList.isNotEmpty) {
                         print('Now i am in NonCurrent list widget SliverGrid');
                         //May be i don't need this condition too
                         return Container(
