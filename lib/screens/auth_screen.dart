@@ -26,8 +26,8 @@ class _AuthScreenState extends State<AuthScreen> {
   String verificationID = '';
   bool _showLoading = false;
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  GlobalKey<ScaffoldMessengerState> _scaffoldKey = GlobalKey();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GlobalKey<ScaffoldMessengerState> _scaffoldKey = GlobalKey();
 
   void signInWithPhoneNumber(phoneAuthCredentials) async {
     setState(() {
@@ -72,29 +72,33 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget getAppHeadingBanner() {
     return Flexible(
       child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         elevation: 8,
         child: Container(
           width: MediaQuery.of(context).size.width - 30,
           height: MediaQuery.of(context).size.height / 4 - 30,
-          padding: EdgeInsets.symmetric(vertical: 19, horizontal: 35),
+          padding: const EdgeInsets.symmetric(vertical: 19, horizontal: 35),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 8,
-                color: Colors.indigo,
-                offset: Offset(0, 2),
-              )
-            ],
-
-            //color: Colors.deepOrange.shade900,
+            borderRadius: BorderRadius.circular(30),
+            gradient: LinearGradient(
+              colors: [
+                Colors.purple.shade900,
+                Colors.purple.shade700,
+                Colors.purple.shade400,
+                Colors.deepPurple,
+                Colors.deepPurple.shade900,
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
           ),
-          child: FittedBox(
+          child: const FittedBox(
             fit: BoxFit.fill,
             child: Text(
               'PROFILE  VIEW',
               style: TextStyle(
-                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontFamily: 'AkayaTelivigala',
                 fontStyle: FontStyle.italic,
               ),
             ),
@@ -109,23 +113,30 @@ class _AuthScreenState extends State<AuthScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        ClipOval(
+          child: SizedBox(
+            height: 270,
+            width: 280,
+            child: Image.asset('assets/images/ProfilePagePic.png'),
+          ),
+        ),
         getAppHeadingBanner(),
-        SizedBox(
+        const SizedBox(
           height: 16,
         ),
         Flexible(
           child: Card(
             elevation: 14,
-            margin: EdgeInsets.all(13),
+            margin: const EdgeInsets.all(16),
             shadowColor: Colors.black,
             child: TextField(
               controller: _phoneController,
-              decoration: InputDecoration(hintText: 'Phone number'),
+              decoration: const InputDecoration(hintText: 'Phone number'),
               keyboardType: TextInputType.phone,
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 16,
         ),
         Flexible(
@@ -159,7 +170,10 @@ class _AuthScreenState extends State<AuthScreen> {
                   },
                   codeAutoRetrievalTimeout: (verfication) async {});
             },
-            child: Text('Send'),
+            child: const Text(
+              'Send',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ),
       ],
@@ -171,23 +185,26 @@ class _AuthScreenState extends State<AuthScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        ClipOval(
+          child: Image.asset('assets/images/ProfilePagePic.png'),
+        ),
         getAppHeadingBanner(),
-        SizedBox(
+        const SizedBox(
           height: 16,
         ), //how can we center these below widgets on screen without using Spacer()?
         Flexible(
           child: Card(
             elevation: 14,
             shadowColor: Colors.black,
-            margin: EdgeInsets.all(13),
+            margin: const EdgeInsets.all(16),
             child: TextField(
               controller: _otpController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(hintText: 'Enter OTP'),
+              decoration: const InputDecoration(hintText: 'Enter OTP'),
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 16,
         ),
         Flexible(
@@ -201,7 +218,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
               signInWithPhoneNumber(phoneAuthCredentials);
             },
-            child: Text('Verify'),
+            child: const Text('Verify'),
           ),
         ),
       ],
@@ -213,25 +230,31 @@ class _AuthScreenState extends State<AuthScreen> {
     final deviceSize = MediaQuery.of(context).size;
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       key: _scaffoldKey,
-      body: SingleChildScrollView(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.orange, Colors.white, Colors.green],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+      //appBar: AppBar(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.greenAccent.shade400,
+              Colors.greenAccent.shade700,
+              Colors.lightGreenAccent,
+              Colors.lightGreenAccent.shade700,
+              Colors.lightGreenAccent.shade400,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          alignment: Alignment.center,
-          width: deviceSize.width,
-          height: deviceSize.height,
-          child: _showLoading == true
-              ? Center(child: CircularProgressIndicator())
-              : _currentState == MobileVerificationState.MOBILE_FORM_STATE
-                  ? getMobileFormWidget()
-                  : getOtpFormWidget(),
         ),
+        alignment: Alignment.center,
+        width: deviceSize.width,
+        height: deviceSize.height,
+        child: _showLoading == true
+            ? const Center(child: CircularProgressIndicator())
+            : _currentState == MobileVerificationState.MOBILE_FORM_STATE
+                ? getMobileFormWidget()
+                : getOtpFormWidget(),
       ),
     );
   }

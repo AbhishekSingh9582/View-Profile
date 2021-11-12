@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,7 +14,7 @@ import '../widgets/take_pic_section.dart';
 class UserDetailForm extends StatefulWidget {
   static const routeArgs = '/UserDetailForm';
 
-  UserDetailForm({Key? key}) : super(key: key);
+  const UserDetailForm({Key? key}) : super(key: key);
 
   @override
   State<UserDetailForm> createState() => _UserDetailFormState();
@@ -34,7 +34,7 @@ class _UserDetailFormState extends State<UserDetailForm> {
   String? country = '';
   String? imageUrl =
       'https://pointchurch.com/wp-content/uploads/2021/06/Blank-Person-Image.png';
-
+  XFile? _fileImage;
   var isLoading = false;
   var _isInit = true;
   @override
@@ -54,27 +54,15 @@ class _UserDetailFormState extends State<UserDetailForm> {
         city = _editedProfile.city;
         state = _editedProfile.state;
         country = _editedProfile.country;
+        imageUrl = _editedProfile.imageUrl;
       }
     }
     _isInit = false;
     super.didChangeDependencies();
   }
 
-  Future<void> _picImage() async {
-    final ImagePicker picker = ImagePicker();
-    final image = await picker.pickImage(
-      source: ImageSource.gallery,
-    );
-    print('below image return from picker');
-    if (image == null) return;
-
-    final directory = await getApplicationDocumentsDirectory();
-    final imageName = p.basename(image.path);
-    final imageFile = File('${directory.path}/$imageName');
-    final newImage = await File(image.path).copy(imageFile.path);
-    setState(() {
-      imageUrl = newImage.path;
-    });
+  void userPickedImage(XFile? fileImage) {
+    _fileImage = fileImage;
   }
 
   Future<void> _saveForm() async {
@@ -91,39 +79,64 @@ class _UserDetailFormState extends State<UserDetailForm> {
     });
     if (id != '') {
       print("I am in detail form update profile ");
+      if (_fileImage != null) {
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('userImage')
+            .child('${FirebaseAuth.instance.currentUser!.uid}.png');
+        if (!imageUrl!.endsWith('Blank-Person-Image.png')) {
+          ref.delete();
+        }
+
+        await ref.putFile(File(_fileImage!.path));
+        final url = await ref.getDownloadURL();
+        imageUrl = url;
+      }
       await Provider.of<ProfileProvider>(context, listen: false).updateProfile(
           id,
           Profile(
-            id: this.id, // Hint Or FirebaseAuth.instance.currentUser!.uid,
-            city: this.city.toString(),
-            name: this.name.toString(),
-            emailAddress: this.emailAddress.toString(),
-            phoneNumber: this.phoneNumber!,
-            state: this.state.toString(),
-            country: this.country.toString(),
-            course: this.course.toString(),
-            college: this.college.toString(),
-            imageUrl: this.imageUrl.toString(),
+            id: id, // Hint Or FirebaseAuth.instance.currentUser!.uid,
+            city: city.toString(),
+            name: name.toString(),
+            emailAddress: emailAddress.toString(),
+            phoneNumber: phoneNumber!,
+            state: state.toString(),
+            country: country.toString(),
+            course: course.toString(),
+            college: college.toString(),
+            imageUrl: imageUrl.toString(),
           ));
-      Navigator.of(context).pushReplacementNamed(AllUsersOverview.routeArgs);
+      await Navigator.of(context)
+          .pushReplacementNamed(AllUsersOverview.routeArgs);
       setState(() {
         isLoading = false;
       });
     } else {
       try {
         print('I m in add user detail form');
+
+        if (_fileImage != null) {
+          final ref = FirebaseStorage.instance
+              .ref()
+              .child('userImage')
+              .child('${FirebaseAuth.instance.currentUser!.uid}.png');
+          await ref.putFile(File(_fileImage!.path));
+          final url = await ref.getDownloadURL();
+          imageUrl = url;
+        }
+
         await Provider.of<ProfileProvider>(context, listen: false)
             .addUser(Profile(
           id: FirebaseAuth.instance.currentUser!.uid,
-          city: this.city.toString(),
-          name: this.name.toString(),
-          emailAddress: this.emailAddress.toString(),
-          phoneNumber: this.phoneNumber!,
-          state: this.state.toString(),
-          country: this.country.toString(),
-          course: this.course.toString(),
+          city: city.toString(),
+          name: name.toString(),
+          emailAddress: emailAddress.toString(),
+          phoneNumber: phoneNumber!,
+          state: state.toString(),
+          country: country.toString(),
+          course: course.toString(),
           college: college.toString(),
-          imageUrl: this.imageUrl.toString(),
+          imageUrl: imageUrl.toString(),
         ));
       } catch (error) {
         await showDialog(
@@ -142,7 +155,8 @@ class _UserDetailFormState extends State<UserDetailForm> {
               );
             });
       } finally {
-        Navigator.of(context).pushReplacementNamed(AllUsersOverview.routeArgs);
+        await Navigator.of(context)
+            .pushReplacementNamed(AllUsersOverview.routeArgs);
         setState(() {
           isLoading = false;
         });
@@ -154,9 +168,17 @@ class _UserDetailFormState extends State<UserDetailForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FILL FORM'),
+        title: const Text(
+          'FILL FORM',
+          style: TextStyle(
+              fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         actions: <Widget>[
           IconButton(
+            splashColor: Colors.grey,
+            color: Colors.black,
             icon: const Icon(Icons.save),
             onPressed: _saveForm,
           ),
@@ -172,7 +194,7 @@ class _UserDetailFormState extends State<UserDetailForm> {
                 key: _formKey,
                 child: ListView(
                   children: [
-                    TakePicSection(_picImage, imageUrl.toString()),
+                    TakePicSection(userPickedImage, imageUrl!),
                     const SizedBox(height: 15),
                     TextFormField(
                       initialValue: name,
@@ -193,6 +215,7 @@ class _UserDetailFormState extends State<UserDetailForm> {
                     const SizedBox(height: 15),
                     TextFormField(
                       initialValue: emailAddress,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                           labelText: 'Email Address',
                           border: OutlineInputBorder(
@@ -200,7 +223,6 @@ class _UserDetailFormState extends State<UserDetailForm> {
                       onSaved: (value) {
                         emailAddress = value;
                       },
-                      onChanged: (value) => emailAddress = value,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Enter Email Address';

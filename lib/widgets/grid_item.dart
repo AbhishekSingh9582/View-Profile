@@ -13,35 +13,46 @@ class GridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //List<Profile> listUser= Provider.of<ProfileProvider>(context,listen: false).users;
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context)
-            .pushNamed(UsersDetailScreen.routeArgs, arguments: id);
-      },
-      child: Column(children: [
-        const SizedBox(
-          height: 5,
-        ),
-        Expanded(
-            child: Image.network(
-          imageUrl,
-        )),
-        Container(
-          margin: const EdgeInsets.only(top: 5),
-          width: double.maxFinite,
-          height: 27,
-          color: Colors.amber,
-          child: Center(
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: Text(
-                name,
-                style: const TextStyle(fontSize: 24),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        splashColor: Colors.blue,
+        onTap: () {
+          Navigator.of(context)
+              .pushNamed(UsersDetailScreen.routeArgs, arguments: id);
+        },
+        child: Column(children: [
+          // const SizedBox(
+          //   height: 5,
+          // ),
+          Expanded(
+              child: Image.network(
+            imageUrl,
+            fit: BoxFit.cover,
+          )),
+          Container(
+            // margin: const EdgeInsets.only(top: 5),
+            width: double.maxFinite,
+            height: 31,
+
+            decoration: const BoxDecoration(
+              color: Colors.amber,
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10)),
+            ),
+            child: Center(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: Text(
+                  name,
+                  style: const TextStyle(fontSize: 25),
+                ),
               ),
             ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 }

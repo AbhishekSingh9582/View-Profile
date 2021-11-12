@@ -45,7 +45,7 @@ class _AllUsersOverviewState extends State<AllUsersOverview> {
         });
       } catch (error) {
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => AuthScreen()));
+            MaterialPageRoute(builder: (context) => const AuthScreen()));
       }
     });
     super.initState();
@@ -68,42 +68,58 @@ class _AllUsersOverviewState extends State<AllUsersOverview> {
     Provider.of<ProfileProvider>(context);
 
     return Scaffold(
+      // extendBodyBehindAppBar: true,
+
       appBar: AppBar(
-        title: const Text('PROFILE VIEW'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          'PROFILE VIEW',
+          style: TextStyle(
+              fontSize: 28, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
         actions: [
           DropdownButton(
             underline: Container(),
-            icon: Icon(
+            icon: const Icon(
               Icons.more_vert,
-              color: Theme.of(context).primaryIconTheme.color,
+              //color: Theme.of(context).primaryIconTheme.color,
+              color: Colors.black,
             ),
             items: [
               DropdownMenuItem(
-                child: Container(
-                  child: Row(
-                    children: const [
-                      Icon(
-                        Icons.edit,
-                      ),
-                      SizedBox(
-                        width: 4,
-                      ),
-                      Text('Edit Profile')
-                    ],
+                child: Material(
+                  child: InkWell(
+                    splashColor: Colors.grey,
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.edit,
+                          color: Colors.black,
+                        ),
+                        SizedBox(
+                          width: 4,
+                        ),
+                        Text('Edit Profile')
+                      ],
+                    ),
                   ),
                 ),
                 value: 'Edit Profile',
               ),
               DropdownMenuItem(
-                child: Container(
-                  child: Row(
-                    children: const [
-                      Icon(Icons.exit_to_app),
-                      SizedBox(
-                        width: 4,
-                      ),
-                      Text('Sign Out'),
-                    ],
+                child: Material(
+                  child: InkWell(
+                    splashColor: Colors.grey,
+                    child: Row(
+                      children: const [
+                        Icon(Icons.exit_to_app, color: Colors.black),
+                        SizedBox(
+                          width: 4,
+                        ),
+                        Text('Sign Out'),
+                      ],
+                    ),
                   ),
                 ),
                 value: 'Sign Out',
@@ -118,8 +134,8 @@ class _AllUsersOverviewState extends State<AllUsersOverview> {
               }
               if (selectedItem == 'Sign Out') {
                 await auth.signOut();
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => AuthScreen()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => const AuthScreen()));
               }
             },
           ),
@@ -139,48 +155,55 @@ class _AllUsersOverviewState extends State<AllUsersOverview> {
                       if (auth.currentUser!.uid ==
                           currentUserProfileinList[index].id) {
                         //May be don't need this condition now
-                        return GestureDetector(
-                          onTap: () => Navigator.of(context).pushNamed(
-                              UsersDetailScreen.routeArgs,
-                              arguments: currentUserProfileinList[index].id),
-                          child: Container(
-                            margin: const EdgeInsets.only(
-                                top: 12, left: 12, right: 12, bottom: 2),
-                            height: 160,
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(children: [
-                              const SizedBox(
-                                width: 15,
+                        return Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            splashColor: Colors.lightBlue,
+                            onTap: () => Navigator.of(context).pushNamed(
+                                UsersDetailScreen.routeArgs,
+                                arguments: currentUserProfileinList[index].id),
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                  top: 12, left: 12, right: 12, bottom: 2),
+                              height: 160,
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 1.8, color: Colors.black),
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              SizedBox(
-                                height: 135,
-                                width: 135,
-                                child: CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      currentUserProfileinList[index].imageUrl),
+                              child: Row(children: [
+                                const SizedBox(
+                                  width: 15,
                                 ),
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Expanded(
-                                child: SizedBox(
-                                  width: double.maxFinite,
-                                  child: FittedBox(
-                                    fit: BoxFit.cover,
-                                    child: Text(
-                                        currentUserProfileinList[index].name,
-                                        style: const TextStyle(
-                                          fontSize: 30,
-                                        )),
+                                SizedBox(
+                                  height: 135,
+                                  width: 135,
+                                  child: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        currentUserProfileinList[index]
+                                            .imageUrl),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 5),
-                            ]),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                  child: SizedBox(
+                                    width: double.maxFinite,
+                                    child: FittedBox(
+                                      fit: BoxFit.cover,
+                                      child: Text(
+                                          currentUserProfileinList[index].name,
+                                          style: const TextStyle(
+                                            fontSize: 30,
+                                          )),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 5),
+                              ]),
+                            ),
                           ),
                         );
                       }
@@ -205,7 +228,9 @@ class _AllUsersOverviewState extends State<AllUsersOverview> {
                           ),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: Colors.blue),
+                              border:
+                                  Border.all(width: 1.8, color: Colors.black),
+                              color: Colors.grey[200]),
                         );
                       }
                     },

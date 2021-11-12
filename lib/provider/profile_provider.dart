@@ -67,6 +67,7 @@ class ProfileProvider with ChangeNotifier {
             'city': profile.city,
             'state': profile.state,
             'country': profile.country,
+            'imageUrl': profile.imageUrl,
           }));
 
       //print(json.decode(respone.body));
@@ -80,6 +81,7 @@ class ProfileProvider with ChangeNotifier {
           course: profile.course,
           city: profile.city,
           state: profile.state,
+          imageUrl: profile.imageUrl,
           country: profile.country);
       _users.add(newProduct);
       notifyListeners();
@@ -118,6 +120,7 @@ class ProfileProvider with ChangeNotifier {
             course: userData['course'],
             city: userData['city'],
             state: userData['state'],
+            imageUrl: userData['imageUrl'],
             country: userData['country']));
       });
       // _users.replaceRange(0, loadedProd.length, loadedProd);
@@ -224,6 +227,7 @@ class ProfileProvider with ChangeNotifier {
             'city': newProfile.city,
             'state': newProfile.state,
             'country': newProfile.country,
+            'imageUrl': newProfile.imageUrl,
           }));
       _users[profIndex] = newProfile;
       notifyListeners();

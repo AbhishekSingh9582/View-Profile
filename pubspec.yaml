@@ -40,6 +40,7 @@ dependencies:
   image_picker: ^0.8.4
   path: ^1.8.0
   path_provider: ^2.0.6
+  firebase_storage: ^10.1.0
   
 
 dev_dependencies:
@@ -68,6 +69,24 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
    - assets/images/blankPerson.jpg
+   - assets/images/ic_address.png
+   - assets/images/ic_dob.png
+   - assets/images/ic_email.png
+   - assets/images/ic_mobile.png
+   - assets/images/ic_name.png
+   - assets/images/college.png
+   - assets/images/courses.png
+   - assets/images/ProfilePagePic.png
+  
+  fonts:
+    - family: AkayaTelivigala
+      fonts:
+        - asset: assets/fonts/AkayaTelivigala-Regular.ttf
+          weight: 400 
+    - family: GreatVibes
+      fonts:
+        - asset: assets/fonts/GreatVibes-Regular.ttf
+          weight: 400 
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

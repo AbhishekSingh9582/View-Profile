@@ -1,18 +1,32 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class TakePicSection extends StatefulWidget {
-  final VoidCallback onClicked;
-  final String imagePath;
-  // TakePicSection(this.onClicked);
-  TakePicSection(this.onClicked, this.imagePath, {Key? key}) : super(key: key);
+  final Function(XFile? fileImage) _imagePickFn;
+  final String imageUrl;
+  TakePicSection(this._imagePickFn, this.imageUrl, {Key? key})
+      : super(key: key);
 
   @override
   _TakePicSectionState createState() => _TakePicSectionState();
 }
 
 class _TakePicSectionState extends State<TakePicSection> {
+  XFile? _fileImage;
+
+  Future<void> _picImage() async {
+    final ImagePicker picker = ImagePicker();
+    final fileImage = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    if (fileImage == null) return;
+    setState(() {
+      _fileImage = fileImage;
+    });
+    widget._imagePickFn(_fileImage);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -30,9 +44,9 @@ class _TakePicSectionState extends State<TakePicSection> {
           ClipOval(
             child: CircleAvatar(
               maxRadius: MediaQuery.of(context).size.width / 4,
-              backgroundImage: widget.imagePath.contains('https://')
-                  ? NetworkImage(widget.imagePath)
-                  : FileImage(File(widget.imagePath)) as ImageProvider,
+              backgroundImage: _fileImage == null
+                  ? NetworkImage(widget.imageUrl)
+                  : FileImage(File(_fileImage!.path)) as ImageProvider,
             ),
             clipBehavior: Clip.antiAlias,
           ),
@@ -45,10 +59,10 @@ class _TakePicSectionState extends State<TakePicSection> {
                 color: Theme.of(context).colorScheme.secondary,
                 child: IconButton(
                   icon: const Icon(
-                    Icons.camera_alt,
+                    Icons.photo_album_outlined,
                     color: Colors.white,
                   ),
-                  onPressed: widget.onClicked,
+                  onPressed: _picImage,
                   iconSize: 33,
                 ),
               ),
