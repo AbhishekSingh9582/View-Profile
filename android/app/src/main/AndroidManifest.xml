@@ -2,7 +2,7 @@
     package="com.example.profile_view_app">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="profile_view_app"
+        android:label="Profile"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

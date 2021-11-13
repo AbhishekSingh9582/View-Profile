@@ -158,7 +158,7 @@ class _AllUsersOverviewState extends State<AllUsersOverview> {
                         return Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            splashColor: Colors.lightBlue,
+                            splashColor: Colors.black,
                             onTap: () => Navigator.of(context).pushNamed(
                                 UsersDetailScreen.routeArgs,
                                 arguments: currentUserProfileinList[index].id),

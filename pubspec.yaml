@@ -41,11 +41,12 @@ dependencies:
   path: ^1.8.0
   path_provider: ^2.0.6
   firebase_storage: ^10.1.0
-  
-
+      
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: "^0.9.2"
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -55,6 +56,11 @@ dev_dependencies:
   flutter_lints: ^1.0.0
   provider: ^5.0.0
 
+flutter_icons:
+  android: true
+  ios: true
+  adaptive_icon_background: "#000000"
+  image_path: "assets/images/profile.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -77,6 +83,7 @@ flutter:
    - assets/images/college.png
    - assets/images/courses.png
    - assets/images/ProfilePagePic.png
+   - assets/images/profile.png
   
   fonts:
     - family: AkayaTelivigala
