@@ -1,6 +1,14 @@
-# profile_view_app
+# Profile App
 
-A new Flutter project.
+Flutter Project
+- An App where user can upload their profiles and can also see other user's profile. 
+- User can change his/her profile later on if requires. Profile include details like name,college,
+courses etc. 
+- App has following functionalities :
+  - mobile number verification process for authentication. Use of Firebase OTP Auth.
+  - Firebase RealTime Database to store user's data.
+  - Firebase Storage to store user's picked image from gallery for profile.
+
 
 ## Getting Started
 
