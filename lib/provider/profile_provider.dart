@@ -54,7 +54,7 @@ class ProfileProvider with ChangeNotifier {
 
   Future<void> addUser(Profile profile) async {
     final url = Uri.https(
-        'profile-view-bf8f8-default-rtdb.firebaseio.com', '/users.json');
+        'Add Your Url', '/users.json');
     try {
       final response = await http.post(url,
           body: json.encode({
@@ -93,7 +93,7 @@ class ProfileProvider with ChangeNotifier {
 
   Future<void> fetchAndSetProfile(String auth) async {
     final url = Uri.https(
-        'profile-view-bf8f8-default-rtdb.firebaseio.com', '/users.json');
+        'Add Your Url', '/users.json');
     try {
       final response = await http.get(url);
       print('response body in fetchAndSetProfile');
@@ -163,7 +163,7 @@ class ProfileProvider with ChangeNotifier {
 
   Future<bool> isUserFilledForm(String currentid) async {
     final url = Uri.https(
-        'profile-view-bf8f8-default-rtdb.firebaseio.com', '/users.json');
+        'Add Your Url', '/users.json');
     print(
         'inside isUserFilledForm profile provider AND current user id= $currentid');
     try {
@@ -214,7 +214,7 @@ class ProfileProvider with ChangeNotifier {
     print('current User Firebase Unique id= $currentFirebaseUniqueId');
     final profIndex = _users.indexWhere((element) => element.id == id);
     if (profIndex >= 0) {
-      final url = Uri.https('profile-view-bf8f8-default-rtdb.firebaseio.com',
+      final url = Uri.https('Your_Url.firebaseio.com',
           '/users/$currentFirebaseUniqueId.json');
       await http.patch(url,
           body: json.encode({
